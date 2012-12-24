@@ -1,0 +1,39 @@
+th.column-heading-even,
+th.column-heading-odd,
+th.column-heading-span,
+th.row-heading-even,
+th.row-heading-span
+{
+    background-color:#e5e5e5;
+    text-align:left;
+    font-size:0.8em;
+    font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+    vertical-align:top;
+}
+
+th.heading-heading,
+th.row-heading-odd
+{
+    background-color:white;
+    text-align:left;
+    font-size:0.8em;
+    font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+    vertical-align:top;
+}
+
+td.cell-odd
+{
+    background-color:white;
+    text-align:right;
+    font-size:0.8em;
+    font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+}
+
+td.cell-even
+{
+    background-color:#e9ebec;
+    text-align:right;
+    font-size:0.8em;
+    font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+}
+
