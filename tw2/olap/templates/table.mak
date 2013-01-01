@@ -6,13 +6,20 @@
 % for cr in range(0, w.getColumnRowCount()):
 <tr>
 % if w.getRowColumnCount() > 0:
-% if w.showRowColumnHeader() and cr == w.getColumnRowCount()-1:
-  % for c in range(w.getRowColumnCount()):
-     <th ${tw.attrs(attrs=w.getRowColumnHeaderAttrs(c))}>${w.displayRowColumnHeader(c)}</th>
-  % endfor
-% else:
- <th colspan="${w.getRowColumnCount()}" />
-% endif
+   % if w.showRowColumnHeader() and cr == w.getColumnRowCount()-1:
+      % for c in range(w.getRowColumnCount()):
+        <th ${tw.attrs(attrs=w.getRowColumnHeaderAttrs(c))}>${w.displayRowColumnHeader(c)}</th>
+      % endfor
+   % else:
+       <% 
+          e_attrs, e_content = w.getEmptyRowDesc(cr)
+       %>
+       % if e_content:
+       	 <th ${tw.attrs(attrs=e_attrs)}>${ e_content|n }</th>
+       % else:
+       	 <th ${tw.attrs(attrs=e_attrs)} />
+       % endif
+   % endif
 % endif
 
 % for c in range(0, w.getColumnCount()):
@@ -29,7 +36,16 @@
   % if w.showRowColumnCell(r, rc):
     <th ${tw.attrs(attrs=w.getRowColumnCellAttrs(r, rc))}>
        <div ${tw.attrs(attrs=w.getRowColumnDivAttrs(r, rc))}>
-       <input ${tw.attrs(attrs=w.getRowColumnInputAttrs(r, rc))}>${w.displayRowColumnCell(r, rc) | n}</div></th>
+       <% 
+          e_name, e_attrs, e_content = w.getRowColumnCellDesc(r, rc)
+       %>
+       % if e_name == "input":
+           <input ${tw.attrs(attrs=e_attrs)}>${e_content | n}
+       % else:
+          <${e_name} ${tw.attrs(attrs=e_attrs)}>${e_content | n}<${e_name}/>
+        % endif
+       </div>
+    </th>
   % endif
 % endfor
 % for c in range(0, w.getColumnCount()):

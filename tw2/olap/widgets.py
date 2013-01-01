@@ -58,19 +58,27 @@ class Table(twc.Widget):
         return len(self.axistuple[0])
 
     def getColumnRowCount(self):
+        
         tup = self.axistuple[0][0]
         if isinstance(tup, list):
             return len(tup)
         return 1
 
     def getRowCount(self):
-        return len(self.axistuple[1])
+        if self.slices:
+            if isinstance(self.slices[0], list):
+                return len(self.slices)
+            return 1
+        return 0
 
     def getRowColumnCount(self):
-        tup = self.axistuple[1][0]
-        if isinstance(tup, list):
-            return len(tup)
-        return 1
+        try:
+            tup = self.axistuple[1][0]
+            if isinstance(tup, list):
+                return len(tup)
+            return 1
+        except:
+            return 0
 
     def getColumnRowCell(self, column, row):
         cell=self.axistuple[0][column]
@@ -105,6 +113,12 @@ class Table(twc.Widget):
         cell=self.getRowColumnCell(row, col)
         return getattr(cell, "_tw2_span", 1) > 0
  
+    def getRowColumnCellDesc(self, row, col):
+        e_name = "input"
+        e_attrs = self.getRowColumnInputAttrs(row, col)
+        e_content = self.displayRowColumnCell(row, col)
+        return e_name, e_attrs, e_content
+
     def getRowColumnCellAttrs(self, row, col):
         cell=self.getRowColumnCell(row, col)
         span=getattr(cell, "_tw2_span", 1)
@@ -142,13 +156,21 @@ class Table(twc.Widget):
         attrs = {"class":"cell-even" if row%2 == 0 else "cell-odd"}
         return attrs
 
-    def displayCell(self, row, col):
-        cell=self.slices[row][col]
-        if isinstance(self.properties, basestring):
+    def getCell(self, row, col):
+        if self.slices:
+            if isinstance(self.slices[0], list):
+                cell=self.slices[row][col]
+            else:
+                cell=self.slices[col]
             return cell
+        return None
 
+    def displayCell(self, row, col):
+        cell = self.getCell(row,col)
+        if isinstance(self.properties, basestring):
+           return cell
         return "override displayRowColumnCell and assemble your cell display"
-
+        return None
     def showRowColumnHeader(self):
         return self.showRowColumnHeaders
 
@@ -167,6 +189,10 @@ class Table(twc.Widget):
 
     def getTrailingRows(self):
         return []
+
+    def getEmptyRowDesc(self, row):
+        attrs = {"colspan":self.getRowColumnCount()}
+        return attrs, None
 
     def spanning(self, src, hier, maxhier, start, end):
         i = start
