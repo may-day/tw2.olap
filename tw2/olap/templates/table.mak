@@ -31,6 +31,7 @@
 % endfor
 
 % for r in range(0, w.getRowCount()):
+% if w.showRow(r):
 <tr>
 % for rc in range(0, w.getRowColumnCount()):
   % if w.showRowColumnCell(r, rc):
@@ -54,6 +55,7 @@
   % endif
 % endfor
 </tr>
+% endif
 % endfor
 
 % for row in w.getTrailingRows():

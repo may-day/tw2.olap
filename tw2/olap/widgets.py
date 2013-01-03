@@ -184,6 +184,12 @@ class Table(twc.Widget):
         #import pdb; pdb.set_trace()
         return cell._Hierarchy
 
+    def showRow(self, row):
+        """
+        Do i want to display that row?
+        """
+        return True
+
     def getLeadingRows(self):
         return []
 
