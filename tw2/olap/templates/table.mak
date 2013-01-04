@@ -51,7 +51,7 @@
 % endfor
 % for c in range(0, w.getColumnCount()):
   % if w.showCell(r, c):
-    <td ${tw.attrs(attrs=w.getCellAttrs(r, c))}>${w.displayCell(r, c)}</td>
+    <td ${tw.attrs(attrs=w.getCellAttrs(r, c))}>${w.displayCell(r, c)|n}</td>
   % endif
 % endfor
 </tr>
