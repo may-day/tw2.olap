@@ -21,6 +21,7 @@ class Table(twc.Widget):
     showTrigger = twc.Param("Show or hide +/- trigger", default=False)
     showSpan = twc.Param("Show or hide spanning cells", default=False)
     showRowColumnHeaders = twc.Param("Show or hide column headers of row head", default=False)
+    colHeaderMap = twc.Param("Optionally substitute columns header names as by this mapping")
 
     resources = [
         twc.CSSLink(modname="tw2.olap", filename="static/table.css"),
@@ -168,7 +169,11 @@ class Table(twc.Widget):
 
     def displayColumnRowCell(self, column, row):
         cell=self.getColumnRowCell(column, row)
-        return cell.Caption
+        caption = cell.Caption
+        if self.colHeaderMap:
+            return self.colHeaderMap.get(caption, caption)
+        return caption
+            
 
     def getRowColumnCell(self, row, col):
         cell=self.axistuple[1][row]
