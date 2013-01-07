@@ -54,6 +54,70 @@ class Table(twc.Widget):
         if maxhier > 1 and not self.showSpan:
             self.spanning( self.axistuple[0], 0, maxhier, 0, self.getColumnCount())
 
+    def getContent(self):
+        colgroup = []
+        theadrows = self.getLeadingRows()
+        tfootrows = []
+        tbodyrows = []
+
+        cr_count = self.getColumnRowCount()
+        rc_count = self.getRowColumnCount()
+        cc = self.getColumnCount()
+
+        # thead
+        for cr in range(cr_count):
+            if self.showColumnHeaderRow(cr):
+                row_attrs = {}
+                ths = []
+                if rc_count > 0:
+                    if self.showRowColumnHeader() and cr == cr_count-1:
+                        for c in range(self.getRowColumnCount()):
+                            ths.append( ("th", self.getRowColumnHeaderAttrs(c), 
+                                         self.displayRowColumnHeader(c)) )
+                    else:
+                        ths.append( self.getEmptyRowDesc(cr) )
+                for c in range(cc):
+                    if self.showColumnRowCell(c, cr):
+                        ths.append( ("th", self.getColumnRowCellAttrs(c, cr), 
+                                     self.displayColumnRowCell(c, cr)))
+   
+                theadrows.append(("tr", row_attrs, ths))
+
+
+        # tbody
+        for r in range(self.getRowCount()):
+            if self.showRow(r):
+                row_attrs = {}
+                tds = []
+                # row header cells
+                for rc in range(rc_count):
+                    if self.showRowColumnCell(r, rc):
+                        td_attrs = self.getRowColumnCellAttrs(r, rc)
+                        div_attrs = self.getRowColumnDivAttrs(r, rc)
+                        div = ("div", div_attrs, self.getRowColumnCellDesc(r, rc))
+                        tds.append(("th", td_attrs, div))
+
+                # data cells
+                for c in range(cc):
+                    if self.showCell(r, c):
+                        tds.append(("td", self.getCellAttrs(r, c), self.displayCell(r, c)))
+
+                tbodyrows.append(("tr", row_attrs, tds))
+
+        # tfoot
+        tfootrows = self.getTrailingRows()
+
+        if tfootrows:
+            tfootrows = ("tfoot", {}, tfootrows)
+
+        if theadrows:
+            theadrows = ("thead", {}, theadrows)
+
+        if tbodyrows:
+            tbodyrows = ("tbody", {}, tbodyrows)
+
+        return colgroup, theadrows, tbodyrows, tfootrows
+        
     def getColumnCount(self):
         return len(self.axistuple[0])
 
@@ -79,6 +143,9 @@ class Table(twc.Widget):
             return 1
         except:
             return 0
+
+    def showColumnHeaderRow(self, row):
+        return True
 
     def getColumnRowCell(self, column, row):
         cell=self.axistuple[0][column]
