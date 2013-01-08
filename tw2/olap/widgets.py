@@ -21,7 +21,7 @@ class Table(twc.Widget):
     showTrigger = twc.Param("Show or hide +/- trigger", default=False)
     showSpan = twc.Param("Show or hide spanning cells", default=False)
     showRowColumnHeaders = twc.Param("Show or hide column headers of row head", default=False)
-    colHeaderMap = twc.Param("Optionally substitute columns header names as by this mapping")
+    colHeaderMap = twc.Param("Optionally substitute columns header names as by this mapping", default={})
 
     resources = [
         twc.CSSLink(modname="tw2.olap", filename="static/table.css"),
@@ -82,7 +82,10 @@ class Table(twc.Widget):
                         ths.append( ("th", self.getColumnRowCellAttrs(c, cr), 
                                      self.displayColumnRowCell(c, cr)))
    
-                theadrows.append(("tr", row_attrs, ths))
+                row = ("tr", row_attrs, ths)
+                rows = self.alterHeadRow(cr, row)
+                if rows:
+                    theadrows.extend(rows)
 
 
         # tbody
@@ -103,7 +106,10 @@ class Table(twc.Widget):
                     if self.showCell(r, c):
                         tds.append(("td", self.getCellAttrs(r, c), self.displayCell(r, c)))
 
-                tbodyrows.append(("tr", row_attrs, tds))
+                row = ("tr", row_attrs, tds)
+                rows = self.alterBodyRow(r, row)
+                if rows:
+                    tbodyrows.extend(rows)
 
         # tfoot
         tfootrows = self.getTrailingRows()
@@ -267,6 +273,12 @@ class Table(twc.Widget):
 
     def getTrailingRows(self):
         return []
+
+    def alterHeadRow(self, row, rowDesc):
+        return [rowDesc]
+
+    def alterBodyRow(self, row, rowDesc):
+        return [rowDesc]
 
     def getEmptyRowDesc(self, row):
         attrs = {"colspan":self.getRowColumnCount()}
