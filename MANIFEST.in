@@ -1,0 +1,3 @@
+recursive-include tw2/olap/static *
+include tw2/olap/templates/*.mak
+include README
